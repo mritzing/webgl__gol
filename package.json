@@ -1,7 +1,7 @@
 {
     "name": "webpack-demo",
     "version": "1.0.0",
-    "description": "",  
+    "description": "",
     "scripts": {
         "start": "webpack --watch",
         "build": "webpack"
@@ -10,7 +10,10 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-      "webpack": "^4.20.2",
-      "webpack-cli": "^3.1.2"
+        "webpack": "^4.20.2",
+        "webpack-cli": "^3.1.2"
+    },
+    "dependencies": {
+        "three": "^0.100.0"
     }
-  }
+}
