@@ -8,6 +8,8 @@ var controls;
 var cubeSettings;
 let boolGrid;
 let itemGrid;
+var curCols;
+var curRows;
 function init() {
     //Setup scene
     scene = new THREE.Scene();
@@ -53,7 +55,8 @@ var itemSettings = function() {
             scene.remove( cubes[ i ]);
         }
         itemGrid = make2DArray();
-        
+        curCols = this.yNum; 
+        curRows = this.xNum;
         controls.target.set(this.xNum/2 , this.yNum /2,50);
         controls.update();
     };
@@ -110,16 +113,14 @@ function animate() {
  */
 function nextFrame() {
     // computate next grid
-    var rows = cubeSettings.xNum;
-    var cols = cubeSettings.yNum;
 
-    let nGrid = new Array(cols);
+    let nGrid = new Array(curCols);
     for (let i = 0; i < nGrid.length;i++ ) {
-        nGrid[i] = new Array(rows);
+        nGrid[i] = new Array(curRows);
     }
     
-    for (let i = 0; i < cols; i ++) {
-        for (let j = 0; j < rows; j++){
+    for (let i = 0; i < curCols; i ++) {
+        for (let j = 0; j < curRows; j++){
             //count live neighbors
             //edge cases
             
@@ -156,14 +157,12 @@ function nextFrame() {
 
 
 function countNeighbors(x ,y) {
-    var rows = cubeSettings.xNum;
-    var cols = cubeSettings.yNum;
 
     let sum = -boolGrid[x][y];
     for (let i = -1; i < 2; i++){
         for(let j = -1; j < 2; j++){
-            let col = (x + i + cols) % cols;
-            let row = (y + j + rows) % rows;
+            let col = (x + i + curCols) %curCols;
+            let row = (y + j + curRows) % curRows;
             sum += boolGrid[col][row];
         }
     }
