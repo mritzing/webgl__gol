@@ -4,6 +4,7 @@ const OrbitControls = require('three-orbit-controls')(THREE);
 var camera, scene, renderer;
 var geometry, material, cube;
 var controls;
+var cubeSettings;
 
 function init() {
     //Setup scene
@@ -22,54 +23,36 @@ function init() {
     //Create webGL renderer
     renderer = new THREE.WebGLRenderer();
     renderer.setSize( window.innerWidth, window.innerHeight );
-    controls = new OrbitControls(camera);
+    controls = new OrbitControls(camera,renderer.domElement);
+    //TODO restrict controls to renderer DOM
     camera.position.set( 0, 5, 5 );
     controls.update();
 
     //Add canvas to DOM
     document.body.appendChild( renderer.domElement );
-}
-var xFactor = +.01;
-var yFactor = -.01;
-var zFactor = +.01;
 
+
+    //gui init
+    const gui = new dat.GUI();
+    cubeSettings = new itemSettings();
+    gui.add(cubeSettings, 'itemScale', -5, 5);
+    
+}
+
+var itemSettings = function() {
+    this.itemScale = 1;
+}
 function animate() {
     //Wait for this function 
     requestAnimationFrame(animate);
-
-    //rotate Cube
-    if (cube.scale.x <= 0){
-        xFactor = +Math.random()*.1;
-    }
-    else if (cube.scale.x >= 2){
-        xFactor = -Math.random()*.1;
-    }
-    if (cube.scale.y <= 0){
-        yFactor = +Math.random()*.1;
-    }
-    else if (cube.scale.y >= 2){
-        yFactor = -Math.random()*.1;
-    }
-    if (cube.scale.z <= 0){
-        zFactor = +Math.random()*.1;
-    }
-    else if (cube.scale.z >= 2){
-        zFactor = -Math.random()*.1;
-    }
-    cube.scale.x += xFactor;
-    cube.scale.y += yFactor;
-    cube.scale.z += zFactor;
+    
     //cube.rotation.x += 0.01;
     //cube.rotation.y += 0.01;
-
+    cube.scale.set(cubeSettings.itemScale,cubeSettings.itemScale,cubeSettings.itemScale);
     //rotate camera around object
     controls.update()
     //Render the scene with camera
     renderer.render(scene, camera);
-}
-
-function shrink(){
-
 }
 
 init();
