@@ -10,6 +10,7 @@ let boolGrid;
 let itemGrid;
 var curCols;
 var curRows;
+var play= false;
 function init() {
     //Setup scene
     scene = new THREE.Scene();
@@ -29,7 +30,7 @@ function init() {
     renderer.setSize( window.innerWidth, window.innerHeight );
     controls = new OrbitControls(camera,renderer.domElement);
 
-    camera.position.set( 0, 5, 5 );
+    camera.position.set( 50, 50, 100 );
     controls.update();
 
     //Add canvas to DOM
@@ -43,6 +44,8 @@ function init() {
     gui.add(cubeSettings, 'yNum', 0, 500,1);
     gui.add(cubeSettings, 'density', 0, 10);
     gui.add(cubeSettings, 'createCubes')
+    gui.add(cubeSettings, 'play');
+    gui.add(cubeSettings, 'stop');
 }
 
 var itemSettings = function() {
@@ -59,7 +62,14 @@ var itemSettings = function() {
         curRows = this.xNum;
         controls.target.set(this.xNum/2 , this.yNum /2,50);
         controls.update();
+        play = true;
     };
+    this.play = function() {   
+        play = true;
+    }
+    this.stop = function() {
+        play = false;
+    }
 }
 
 function make2DArray() {
@@ -98,10 +108,16 @@ function animate() {
     //Wait for this function 
     requestAnimationFrame(animate);
 
-    
-    nextFrame();
-    
+    if(play){
+
+        //calculate next frame
+        nextFrame();
+
+        // add 
+        // remove
+    }
     //rotate camera around object
+    
     controls.update();
     //Render the scene with camera
     
@@ -142,19 +158,31 @@ function nextFrame() {
                 }
                 else if (state == 1 && ( neighbors < 1 || neighbors > 3)) {
                     nGrid[i][j] = 0;
-                   // console.log("removing")
-                    scene.remove(itemGrid[i][j]);
-                    itemGrid[i][j] = null;
+                    // console.log("removing")
+                    shrinkRemove(itemGrid[i][j], i, j);   
                 }
                 else {
                     nGrid[i][j] = state;
-                
                 }
         }   
     }
     boolGrid= nGrid;
 }
 
+var sFactor = .1;
+async function growAdd() {
+
+}
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+async function shrinkRemove(item, i, j) {
+    for (let i =  1; i > 0; i -=sFactor){
+        item.scale.set(i,i,i);
+    }
+    itemGrid[i][j] = null;
+    scene.remove(item);
+}
 
 function countNeighbors(x ,y) {
 
@@ -186,3 +214,12 @@ for ( var i = 0, il = spheres.length; i < il; i ++ ) {
 init();
 itemGrid = make2DArray();
 animate();
+
+
+/**
+ * TODO List
+ * Animation
+ * Frame Limiting
+ * Scaling arrays
+ * 3D
+ */
